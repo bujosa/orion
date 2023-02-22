@@ -8,8 +8,9 @@ contract Proxy {
         implementation = _implementation;
     }
 
-    function changeX(uint256 _x) external {
-        Logic1(implementation).changeX(_x);
+    fallback() external {
+        (bool success, ) = implementation.call(msg.data);
+        require(success);
     }
 }
 
@@ -26,5 +27,9 @@ contract Logic2 {
 
     function changeX(uint256 _x) external {
         x = _x * 2;
+    }
+
+    function tripleX() external {
+        x *= 3;
     }
 }
