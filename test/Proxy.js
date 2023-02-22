@@ -12,34 +12,41 @@ describe('Proxy', function () {
     const Logic2 = await ethers.getContractFactory('Logic2');
     const logic2 = await Logic2.deploy();
 
-    return { proxy, logic1, logic2 };
+    const proxyAsLogic1 = await ethers.getContractAt('Logic1', proxy.address);
+    const proxyAsLogic2 = await ethers.getContractAt('Logic2', proxy.address);
+
+    return { proxy, logic1, logic2, proxyAsLogic1, proxyAsLogic2 };
   }
 
   it('Should work with logic1', async function () {
-    const { proxy, logic1 } = await loadFixture(deployFixture);
+    const { proxy, logic1, proxyAsLogic1 } = await loadFixture(deployFixture);
 
     await proxy.changeImplementation(logic1.address);
 
     expect(await logic1.x()).to.equal(0);
 
-    await proxy.changeX(40);
+    await proxyAsLogic1.changeX(40);
 
     expect(await logic1.x()).to.equal(40);
   });
 
-  it('Should work with upgades', async function () {
-    const { proxy, logic1, logic2 } = await loadFixture(deployFixture);
+  it('Should work with upgrades', async function () {
+    const { proxy, logic1, logic2, proxyAsLogic1, proxyAsLogic2 } =
+      await loadFixture(deployFixture);
 
     await proxy.changeImplementation(logic1.address);
     expect(await logic1.x()).to.equal(0);
 
-    await proxy.changeX(40);
+    await proxyAsLogic1.changeX(40);
     expect(await logic1.x()).to.equal(40);
 
     await proxy.changeImplementation(logic2.address);
     expect(await logic2.x()).to.equal(0);
 
-    await proxy.changeX(45);
+    await proxyAsLogic2.changeX(45);
     expect(await logic2.x()).to.equal(90);
+
+    await proxyAsLogic2.tripleX();
+    expect(await logic2.x()).to.equal(270);
   });
 });
