@@ -25,6 +25,6 @@ contract Logic2 {
     uint256 public x = 0;
 
     function changeX(uint256 _x) external {
-        x = _x;
+        x = _x * 2;
     }
 }

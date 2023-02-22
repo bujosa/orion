@@ -31,18 +31,15 @@ describe('Proxy', function () {
     const { proxy, logic1, logic2 } = await loadFixture(deployFixture);
 
     await proxy.changeImplementation(logic1.address);
-
     expect(await logic1.x()).to.equal(0);
 
     await proxy.changeX(40);
-
     expect(await logic1.x()).to.equal(40);
 
     await proxy.changeImplementation(logic2.address);
     expect(await logic2.x()).to.equal(0);
 
     await proxy.changeX(45);
-
-    expect(await logic2.x()).to.equal(45);
+    expect(await logic2.x()).to.equal(90);
   });
 });
