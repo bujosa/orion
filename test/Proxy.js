@@ -13,9 +13,14 @@ describe('Proxy', function () {
     const logic2 = await Logic2.deploy();
 
     const proxyAsLogic1 = await ethers.getContractAt('Logic1', proxy.address);
+
     const proxyAsLogic2 = await ethers.getContractAt('Logic2', proxy.address);
 
     return { proxy, logic1, logic2, proxyAsLogic1, proxyAsLogic2 };
+  }
+
+  async function lookupUint(contractAdr, slot) {
+    return parseInt(await ethers.provider.getStorageAt(contractAdr, slot));
   }
 
   it('Should work with logic1', async function () {
@@ -23,11 +28,11 @@ describe('Proxy', function () {
 
     await proxy.changeImplementation(logic1.address);
 
-    expect(await logic1.x()).to.equal(0);
+    expect(await lookupUint(logic1.address, '0x0')).to.equal(0);
 
     await proxyAsLogic1.changeX(40);
 
-    expect(await logic1.x()).to.equal(40);
+    expect(await lookupUint(logic1.address, '0x0')).to.equal(40);
   });
 
   it('Should work with upgrades', async function () {
@@ -35,18 +40,18 @@ describe('Proxy', function () {
       await loadFixture(deployFixture);
 
     await proxy.changeImplementation(logic1.address);
-    expect(await logic1.x()).to.equal(0);
+    expect(await lookupUint(logic1.address, '0x0')).to.equal(0);
 
     await proxyAsLogic1.changeX(40);
-    expect(await logic1.x()).to.equal(40);
+    expect(await lookupUint(logic1.address, '0x0')).to.equal(40);
 
     await proxy.changeImplementation(logic2.address);
-    expect(await logic2.x()).to.equal(0);
+    expect(await lookupUint(logic2.address, '0x0')).to.equal(0);
 
     await proxyAsLogic2.changeX(45);
-    expect(await logic2.x()).to.equal(90);
+    expect(await lookupUint(logic2.address, '0x0')).to.equal(90);
 
     await proxyAsLogic2.tripleX();
-    expect(await logic2.x()).to.equal(270);
+    expect(await lookupUint(logic2.address, '0x0')).to.equal(270);
   });
 });

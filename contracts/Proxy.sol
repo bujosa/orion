@@ -15,7 +15,7 @@ contract Proxy {
 }
 
 contract Logic1 {
-    uint256 public x = 0;
+    uint256 x = 0;
 
     function changeX(uint256 _x) external {
         x = _x;
@@ -23,7 +23,7 @@ contract Logic1 {
 }
 
 contract Logic2 {
-    uint256 public x = 0;
+    uint256 x = 0;
 
     function changeX(uint256 _x) external {
         x = _x * 2;
