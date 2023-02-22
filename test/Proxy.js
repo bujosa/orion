@@ -45,11 +45,11 @@ describe('Proxy', function () {
     await proxyAsLogic1.changeX(40);
     expect(await lookupUint(proxy.address, '0x0')).to.equal(40);
 
+    // LOGIC 2
     await proxy.changeImplementation(logic2.address);
     expect(await lookupUint(proxy.address, '0x0')).to.equal(40);
 
-    await proxyAsLogic2.changeX(25);
     await proxyAsLogic2.tripleX();
-    expect(await lookupUint(proxy.address, '0x0')).to.equal(150);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(120);
   });
 });
