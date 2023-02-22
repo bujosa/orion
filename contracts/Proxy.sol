@@ -2,6 +2,7 @@
 pragma solidity ^0.8.9;
 
 contract Proxy {
+    uint256 x = 0;
     address implementation;
 
     function changeImplementation(address _implementation) external {
@@ -9,7 +10,7 @@ contract Proxy {
     }
 
     fallback() external {
-        (bool success, ) = implementation.call(msg.data);
+        (bool success, ) = implementation.delegatecall(msg.data);
         require(success);
     }
 }

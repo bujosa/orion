@@ -28,11 +28,11 @@ describe('Proxy', function () {
 
     await proxy.changeImplementation(logic1.address);
 
-    expect(await lookupUint(logic1.address, '0x0')).to.equal(0);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(0);
 
     await proxyAsLogic1.changeX(40);
 
-    expect(await lookupUint(logic1.address, '0x0')).to.equal(40);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(40);
   });
 
   it('Should work with upgrades', async function () {
@@ -40,18 +40,16 @@ describe('Proxy', function () {
       await loadFixture(deployFixture);
 
     await proxy.changeImplementation(logic1.address);
-    expect(await lookupUint(logic1.address, '0x0')).to.equal(0);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(0);
 
     await proxyAsLogic1.changeX(40);
-    expect(await lookupUint(logic1.address, '0x0')).to.equal(40);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(40);
 
     await proxy.changeImplementation(logic2.address);
-    expect(await lookupUint(logic2.address, '0x0')).to.equal(0);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(40);
 
-    await proxyAsLogic2.changeX(45);
-    expect(await lookupUint(logic2.address, '0x0')).to.equal(90);
-
+    await proxyAsLogic2.changeX(25);
     await proxyAsLogic2.tripleX();
-    expect(await lookupUint(logic2.address, '0x0')).to.equal(270);
+    expect(await lookupUint(proxy.address, '0x0')).to.equal(150);
   });
 });
